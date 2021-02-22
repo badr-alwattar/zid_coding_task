@@ -28,7 +28,8 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password)
         ];   
-        User::create($user);
+        $user = User::create($user);
+        $user->assignRole('developer');
         
         return response()->json(['message' => 'Successfully created user!'], 201);
     }

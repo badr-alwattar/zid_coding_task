@@ -33,7 +33,6 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::group(['middleware' => ['auth:api']], function() {
-    Route::resource('shipments', ShipmentController::class);
     Route::group(['middleware' => ['role:admin']], function() {
         Route::resource('users', UserController::class);
         
@@ -46,9 +45,11 @@ Route::group(['middleware' => ['auth:api']], function() {
         });
     });
 
-    // Route::group(['middleware' => ['role:admin']], function() {
-        
-    // });
+    Route::group(['middleware' => ['role:admin|developer']], function() {
+        Route::resource('shipments', ShipmentController::class);
+        Route::get('print_shipments', [ShipmentController::class, 'printShipments']);
+        Route::post('shipments/file_upload', [ShipmentController::class, 'file_upload']);
+    });
    
 });
 

@@ -4,12 +4,36 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\ShipmentCreateRequest;
+use App\Http\Requests\ShipmentFileUploadRequest;
 use Auth;
+use Storage;
+use App\Models\Shipment;
+use App\Models\Document;
+
 class ShipmentController extends Controller
 {
     public function store(ShipmentCreateRequest $request) {
-        $request->validated()['tracking_number'] = now();
-        dd($request->validated());
-        Auth::user()->shipments()->create($request->validated());
+        Auth::user()->shipments()->create(array_merge($request->validated(),['tracking_number' => now()]));
+        return response()->json(['message' => 'Successfully created shipment!'], 201);
+    }
+
+    public function printShipments(Request $request) {
+        $shipments = Shipment::query();
+
+        if(isset($request->shipments) && count($request->shipments) > 0)
+            $shipments->whereIn('id', $request->shipments);
+
+        return response()->json(['shipments' => $shipments->get()], 200);
+    }
+
+    public function file_upload(ShipmentFileUploadRequest $request) {
+        $shipment = Shipment::findOrFail($request->shipment_id);
+
+        $data = $request->validated();
+        $data['file'] = Storage::disk('public')->put('shipments_documents', $data['file']);
+
+        $shipment->documents()->create($data);
+
+        return response()->json(['message' => 'Successfully added shipment document!'], 201);
     }
 }

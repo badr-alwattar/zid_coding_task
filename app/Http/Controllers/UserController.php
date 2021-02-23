@@ -17,7 +17,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password)
         ];
-        
+        dd($data);
         $user = User::create($data);
         $user->assignRole(Role::findOrFail($request->role_id)->name);
         

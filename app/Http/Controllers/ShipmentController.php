@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ShipmentCreateRequest;
 use App\Http\Requests\ShipmentFileUploadRequest;
 use App\Http\Requests\StatusIdRequest;
+use App\Http\Requests\ShipmentDeliveryRequest;
 use Auth;
 use Storage;
 use App\Models\Shipment;
@@ -50,5 +51,10 @@ class ShipmentController extends Controller
     public function assign_shipment_driver(Shipment $shipment) {
         $shipment->update(['driver_id' => Auth::id()]);
         return response()->json(['message' => 'Successfully assigned shipment to driver!'], 200);
+    }
+
+    public function schedule_delivery(ShipmentDeliveryRequest $request, Shipment $shipment){
+        $shipment->update($request->validated());
+        return response()->json(['message' => 'Successfully scheduled shipment delivery!'], 200);
     }
 }

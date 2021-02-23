@@ -9,6 +9,7 @@ use App\Http\Requests\StatusIdRequest;
 use App\Http\Requests\ShipmentDeliveryRequest;
 use Auth;
 use Storage;
+use Spatie\WebhookServer\WebhookCall;
 use App\Models\Shipment;
 use App\Models\Document;
 
@@ -45,6 +46,12 @@ class ShipmentController extends Controller
 
     public function update_status(StatusIdRequest $request, Shipment $shipment) {
         $shipment->update($request->validated());
+
+        WebhookCall::create()
+            ->url('https://other-app.com/webhooks')
+            ->payload(['shipment' => $shipment, 'status' => $shipment->status])
+            ->useSecret('sign-using-this-secret')
+            ->dispatch();
         return response()->json(['message' => 'Successfully updated shipment status!'], 200);
     }
 

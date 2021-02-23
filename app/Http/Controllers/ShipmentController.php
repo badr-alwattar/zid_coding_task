@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\ShipmentCreateRequest;
 use App\Http\Requests\ShipmentFileUploadRequest;
+use App\Http\Requests\StatusIdRequest;
 use Auth;
 use Storage;
 use App\Models\Shipment;
@@ -35,5 +36,19 @@ class ShipmentController extends Controller
         $shipment->documents()->create($data);
 
         return response()->json(['message' => 'Successfully added shipment document!'], 201);
+    }
+
+    public function get_status(Shipment $shipment) {
+        return response()->json(['status' => $shipment->status], 200);
+    }
+
+    public function update_status(StatusIdRequest $request, Shipment $shipment) {
+        $shipment->update($request->validated());
+        return response()->json(['message' => 'Successfully updated shipment status!'], 200);
+    }
+
+    public function assign_shipment_driver(Shipment $shipment) {
+        $shipment->update(['driver_id' => Auth::id()]);
+        return response()->json(['message' => 'Successfully assigned shipment to driver!'], 200);
     }
 }

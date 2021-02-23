@@ -49,8 +49,16 @@ Route::group(['middleware' => ['auth:api']], function() {
         Route::resource('shipments', ShipmentController::class);
         Route::get('print_shipments', [ShipmentController::class, 'printShipments']);
         Route::post('shipments/file_upload', [ShipmentController::class, 'file_upload']);
+        
     });
-   
+    Route::group(['middleware' => ['role:admin|developer|driver']], function() {
+        Route::get('shipments/get_status/{shipment}', [ShipmentController::class, 'get_status']);
+        Route::put('shipments/update_status/{shipment}', [ShipmentController::class, 'update_status']);
+    });
+
+    Route::group(['middleware' => ['role:driver']], function() {
+        Route::put('shipments/assign_shipment_driver/{shipment}', [ShipmentController::class, 'assign_shipment_driver']);
+    });
 });
 
 

@@ -26,7 +26,6 @@ class CreateShipmentsTable extends Migration
             $table->string('receiver_latitude');
             $table->string('receiver_longitude');
             $table->string('tracking_number');
-            $table->foreignId('status_id')->default(1)->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('driver_id')->nullable()->constrained('users')->cascadeOnDelete();
             $table->timestamp('delivery_time')->nullable();

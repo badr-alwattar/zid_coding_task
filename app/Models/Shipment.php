@@ -18,7 +18,7 @@ class Shipment extends Model
         return $this->hasMany(Document::class);
     }
 
-    public function status() {
-        return $this->belongsTo(Status::class);
+    public function statuses() {
+        return $this->belongsToMany(Status::class)->using(ShipmentStatus::class)->withTimeStamps();
     }
 }

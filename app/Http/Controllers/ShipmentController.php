@@ -41,17 +41,16 @@ class ShipmentController extends Controller
     }
 
     public function get_status(Shipment $shipment) {
-        return response()->json(['status' => $shipment->status], 200);
+        return response()->json(['status' => $shipment->statuses->last()], 200);
     }
 
     public function update_status(StatusIdRequest $request, Shipment $shipment) {
-        $shipment->update($request->validated());
-
-        WebhookCall::create()
-            ->url('https://other-app.com/webhooks')
-            ->payload(['shipment' => $shipment, 'status' => $shipment->status])
-            ->useSecret('sign-using-this-secret')
-            ->dispatch();
+        $shipment->statuses()->sync($request->validated());
+        // WebhookCall::create()
+        //     ->url('https://other-app.com/webhooks')
+        //     ->payload(['shipment' => $shipment, 'status' => $shipment->status])
+        //     ->useSecret('sign-using-this-secret')
+        //     ->dispatch();
         return response()->json(['message' => 'Successfully updated shipment status!'], 200);
     }
 

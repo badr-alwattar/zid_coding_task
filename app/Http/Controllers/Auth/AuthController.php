@@ -12,27 +12,6 @@ use Auth;
 
 class AuthController extends Controller
 {
-    /**
-     * Create user
-     *
-     * @param  [string] name
-     * @param  [string] email
-     * @param  [string] password
-     * @param  [string] password_confirmation
-     * @return [string] message
-     */
-    public function register(UserRegisterRequest $request)
-    {
-        $user = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password)
-        ];   
-        $user = User::create($user);
-        $user->assignRole('developer');
-        
-        return response()->json(['message' => 'Successfully created user!'], 201);
-    }
   
     /**
      * Login user and create token
